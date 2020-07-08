@@ -1,3 +1,41 @@
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
+class LinkedList:
+    def __init__(self):
+        self.head = None
+    def find(self, key):
+      #start at the head
+      #loop through the list
+      #find value
+      #return the node
+      cur = self.head
+      while cur is not None:
+        if cur.key == key:
+          return cur
+        cur = cur.next
+      return None
+    def delete(self, key):
+      cur = self.head
+      if cur.key == key:
+        self.head = cur.next
+        return cur
+      prev = cur
+      cur = cur.next
+      while cur is not None:
+        if cur.key == key:
+          prev.next = cur.next
+          return cur
+        else:
+          prev = cur
+          cur = cur.next
+      return None
+    def insert_at_head(self, node):
+      node.next = self.head
+      self.head = node
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -23,7 +61,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
-        self.hash_table = [None]*capacity
+        self.hash_table = [LinkedList()]*capacity
         self.values = 0
 
 
@@ -92,8 +130,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.hash_table[self.hash_index(key)] = value
+        self.hash_table[self.hash_index(key)].insert_at_head(Node(key,value)) 
         self.values += 1
+
+        if self.get_load_factor() > 0.7:
+
+            self.resize(self.capacity*2)
 
 
     def delete(self, key):
@@ -106,14 +148,28 @@ class HashTable:
         """
         # Your code here
         try:
-            self.hash_table[self.hash_index(key)] = None
+            self.hash_table[self.hash_index(key)].delete(key)
 
             if self.values > 0:
                 self.values -= 1
 
+            if self.get_load_factor < 0.2:
+
+                if self.capacity == MIN_CAPACITY:
+
+                    pass
+
+                else:
+
+                    new_capacity = self.capacity/2
+
+                    self.resize(new_capacity)
+
+                    
+
         except:
 
-            print("key was not found")
+            return None
 
 
     def get(self, key):
@@ -125,7 +181,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.hash_table[self.hash_index(key)]
+        node = self.hash_table[self.hash_index(key)].find(key)
+
+        if node:
+
+            return node.value
+        
+        else:
+
+            return None
 
     def resize(self, new_capacity):
         """
@@ -135,6 +199,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        self.capacity = new_capacity
+        temp = [LinkedList()]*self.capacity
+
+        for linkedlist in self.hash_table:
+
+            cur = linkedlist.head
+            while cur is not None:
+
+                temp[self.hash_index(cur.key)].insert_at_head(Node(cur.key,cur.value)) 
+                
+                cur = cur.next
+
+        self.hash_table = temp
+
+
+
 
 
 
