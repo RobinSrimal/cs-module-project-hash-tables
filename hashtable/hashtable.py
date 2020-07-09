@@ -130,6 +130,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # check if key is in hashtable 
+
+        # if it is overwrite:
+
+        # else:
         self.hash_table[self.hash_index(key)].insert_at_head(Node(key,value)) 
         self.values += 1
 
